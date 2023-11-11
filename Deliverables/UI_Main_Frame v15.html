@@ -26,7 +26,7 @@
       box-sizing: border-box;
     }
 
-    .wrapper {
+    .valet-container {
       display: flex;
       padding-top: 160px;
       padding-bottom: 40px;
@@ -89,20 +89,82 @@
   </div>
 
   <!-- App's Garage Layout Panel -->
-  <div class="wrapper">
-    <div id="Garage" on>
-      <img src="Ford GF v3.png" alt="Ford GF" id="Img" />
+  <div class="valet-container">
+    <div id="Garage" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <img src="Ford GF v3.png" alt="Ford GF" id="BgImg" />
     </div>
   </div>
   <!-- END OF App's Garage Layout Panel -->
 
+  <img src="Car.png" ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" id="DragTarget"
+    style="position: fixed; top: 100px; left: 20px" />
+
 
   <script>
-    document.getElementById("Img").addEventListener('mouseup', (e) => {
-      const x = e.offsetX
-      const y = e.offsetY;
-      console.log({ x, y })
-    })
+    const BgImgEl = document.getElementById("BgImg");
+    const GarageEl = document.getElementById("Garage");
+    const DragTargetEl = document.getElementById("DragTarget");
+
+    function dragStart(event) {
+      event.dataTransfer.setData("ID", event.target.id);
+    }
+
+    function dragging(event) {
+    }
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      if (isDropOnCar(event)) return;
+      if (!isValidPosition(event)) return;
+      const id = event.dataTransfer.getData("ID");
+      let el = document.getElementById(id);
+      if (isDropFirst(id)) {
+        generateNewDragItem();
+        el.id += new Date().getTime();
+      }
+      el.style.position = "absolute";
+      el.style.left = event.offsetX + "px";
+      el.style.top = event.offsetY + "px";
+      GarageEl.appendChild(el);
+    }
+
+    function isDropOnCar(event) {
+      return event.target.id.includes("DragTarget");
+    }
+
+    function isDropFirst(id) {
+      return id === "DragTarget";
+    }
+
+    function generateNewDragItem() {
+      const el = document.createElement(DragTargetEl.tagName);
+      el.src = DragTargetEl.src;
+      el.ondragstart = DragTargetEl.ondragstart;
+      el.ondrag = DragTargetEl.ondrag;
+      el.ondrag = DragTargetEl.ondrag;
+      el.draggable = DragTargetEl.draggable;
+      el.id = "DragTarget";
+      el.style.position = "fixed";
+      el.style.top = "100px";
+      el.style.left = "20px";
+      document.body.appendChild(el)
+    }
+
+    function isValidPosition(event) {
+      const item = { x: 335, y: 65, width: 35, height: 115, empty: true }
+      if (
+        event.offsetX > item.x &&
+        event.offsetX < item.x + item.width &&
+        event.offsetY > item.y &&
+        event.offsetY < item.y + item.height &&
+        item.empty
+      ) return true
+      return false
+    }
   </script>
 
   <script>
