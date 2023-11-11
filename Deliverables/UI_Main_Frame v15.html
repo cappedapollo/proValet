@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- This module is part of an AI based system, utilizing both the Reactive Machine and the Limited Memory types, under a Supervised Learning model.  -->
+  <title>ProValet HOME</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    html,
+    body,
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      overflow: auto;
+      background-color: #ccc;
+      box-sizing: border-box;
+    }
+
+    .wrapper {
+      display: flex;
+      padding-top: 160px;
+      padding-bottom: 40px;
+      overflow: hidden;
+    }
+
+    #Garage {
+      position: relative;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- App's Top (locked) Panel -->
+  <div class="w3-top w3-container" style="background-color:#2B569A; height: 90px;">
+    <div class="w3-row">
+      <div class="w3-col w3-container w3-display-left" style="width:180px;">
+        <img src="PRO Valet logo v1.jpg" alt="Pro Valet" />
+      </div>
+      <div class="w3-col w3-container w3-display-position" style="top:47px;left:230px;">
+
+        <!-- Nav Buttons -->
+        <div class="w3-bar w3-large w3-text-light-grey">
+          <a href="#" class="w3-button w3-bar-item">Operations</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-small">Customers</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Search</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Calendar</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Personnel</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Admin</a>
+          <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large"
+            onclick="myFunction()">&#9776;</a>
+        </div>
+        <div id="nav" class="w3-bar-block w3-hide w3-hide-large w3-text-light-grey"
+          style="background-color:#2B569A; border-style: solid; border-color: black;">
+          <a href="#" class="w3-bar-item w3-button">Customers</a>
+          <a href="#" class="w3-bar-item w3-button">Search</a>
+          <a href="#" class="w3-bar-item w3-button">Calendar</a>
+          <a href="#" class="w3-bar-item w3-button">Personnel</a>
+          <a href="#" class="w3-bar-item w3-button">Admin</a>
+        </div>
+
+      </div>
+
+      <div class="w3-rest w3-container w3-display-position" style="top:1px;right:8px;">
+        <p id="result" class="w3-text-white w3-padding-small w3-border w3-border-grey"
+          style="background-color: #556fbb;">
+          <!-- Garage Image UI Initializer and Server Status (SSE) is sent here -->
+          <!-- background-color: #b7005b; *** TODO USE THIS BG color IF FAILURE -->
+          PAGE INIT
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- App's Garage Layout Panel -->
+  <div class="wrapper">
+    <div id="Garage" on>
+      <img src="Ford GF v3.png" alt="Ford GF" id="Img" />
+    </div>
+  </div>
+  <!-- END OF App's Garage Layout Panel -->
+
+
+  <script>
+    document.getElementById("Img").addEventListener('mouseup', (e) => {
+      const x = e.offsetX
+      const y = e.offsetY;
+      console.log({ x, y })
+    })
+  </script>
+
+  <script>
+    var w;
+
+    function startWorker() {
+      if (typeof (Worker) !== "undefined") {
+        if (typeof (w) == "undefined") {
+          w = new Worker("demo_workers.js");
+        }
+        w.onmessage = function (event) {
+          document.getElementById("result").innerHTML = event.data;
+        };
+      } else {
+        document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+      }
+    }
+
+    function stopWorker() {
+      w.terminate();
+      w = undefined;
+    }
+  </script>
+
+
+  <script>
+    // ** Server Messages **
+    if (typeof (EventSource) !== "undefined") {
+      document.getElementById("result").innerHTML = "SSE Ready"; // Server Side Event Reception Support - Ready
+      var source = new EventSource("demo_sse.php");
+      source.onmessage = function (event) {
+        document.getElementById("result").innerHTML = "RECEIVING " + event.data;
+      };
+      document.getElementById("result").innerHTML = "SSE IDLE"; // Server Side Event Reception Support - Ready
+    } else {
+      document.getElementById("result").innerHTML = "X !NO SSE!"; // No Server Side Event Support
+    }
+  </script>
+
+</body>
+
+</html>
