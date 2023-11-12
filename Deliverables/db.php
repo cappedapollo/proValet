@@ -8,7 +8,6 @@ class DB {
             $p->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
             $this->pdo = $p;
-            echo "Connected to the SQLite database successfully\n";
             try {
                 $p->exec("CREATE TABLE IF NOT EXISTS garages (
                                 id INTEGER PRIMARY KEY,
@@ -27,7 +26,7 @@ class DB {
         }
     }
     
-    function getAllData() {
+    public function getAllData() {
         try {
             $stmt = $this->pdo->query('SELECT * FROM garages');
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,12 +36,12 @@ class DB {
         }
     }
     
-    function dropEl($data) {
+    public function dropEl($data) {
         try {
             $trId = $data->trId;
             $elId = $data->elId;
-            $affectedRows = $this->pdo->exec("UPDATE garages SET e = null WHERE e = $elId");
-            $affectedRows = $this->pdo->exec("UPDATE garages SET e = $elId WHERE id = $trId");
+            $affectedRows = $this->pdo->exec("UPDATE garages SET e = null WHERE e = '$elId'");
+            $affectedRows = $this->pdo->exec("UPDATE garages SET e = '$elId' WHERE id = '$trId'");
             return true;
         } catch (PDOException $e) {
             return false;
