@@ -41,8 +41,8 @@ function getAllData() {
 
 function dropEl($data) {
     try {
-        $trId = $data["trId"];
-        $elId = $data["elId"];
+        $trId = $data->trId;
+        $elId = $data->elId;
         $affectedRows = $pdo->exec("UPDATE garages SET e = null WHERE e = $elId");
         $affectedRows = $pdo->exec("UPDATE garages SET e = $elId WHERE id = $trId");
         return true;

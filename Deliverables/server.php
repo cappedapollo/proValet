@@ -23,7 +23,8 @@ class MyWebSocketServer implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $obj = json_decode($msg);
-        $action = $obj["action"];
+        echo($msg);
+        $action = $obj->action;
 
         switch ($action) {
             case 'init':
@@ -34,7 +35,7 @@ class MyWebSocketServer implements MessageComponentInterface {
 
             case 'drop':
                 echo "Drop action\n";
-                $result = dropEl($obj["data"]);
+                $result = dropEl($obj->data);
                 foreach ($this->clients as $client) {
                     $client->send(json_encode($obj));
                 }
