@@ -47,4 +47,14 @@ class DB {
             return false;
         }
     }
+
+    public function trashEl($data) {
+        try {
+            $elId = $data->elId;
+            $affectedRows = $this->pdo->exec("UPDATE garages SET e = null WHERE e = '$elId'");
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }

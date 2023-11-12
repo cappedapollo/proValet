@@ -43,6 +43,15 @@ class MyWebSocketServer implements MessageComponentInterface {
                     }
                 }
                 break;
+            case 'trash':
+                echo "Trash action\n";
+                $result = $this->db->trashEl($obj->data);
+                if($result) {
+                    foreach ($this->clients as $client) {
+                        $client->send(json_encode($obj));
+                    }
+                }
+                break;
 
             default:
                 break;
