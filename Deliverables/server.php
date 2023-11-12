@@ -4,16 +4,18 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
+include 'db.php';
 
 require 'vendor/autoload.php';
-require './db.php';
 
 class MyWebSocketServer implements MessageComponentInterface {
 
     protected $clients;
+    protected $db;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage();
+        $this->db = new DB();
     }
     
     public function onOpen(ConnectionInterface $conn) {
@@ -23,19 +25,18 @@ class MyWebSocketServer implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $obj = json_decode($msg);
-        echo($msg);
         $action = $obj->action;
 
         switch ($action) {
             case 'init':
                 echo "Init action\n";
-                $result = getAllData();
+                $result = $this->db->getAllData();
                 $from->send(json_encode(['action'=>$action, 'data'=>$result]));
                 break;
 
             case 'drop':
                 echo "Drop action\n";
-                $result = dropEl($obj->data);
+                $result = $this->db->dropEl($obj->data);
                 foreach ($this->clients as $client) {
                     $client->send(json_encode($obj));
                 }
