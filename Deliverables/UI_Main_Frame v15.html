@@ -162,15 +162,22 @@
             );
             renderInit();
             break;
-          case "drop":
-            const {trId, elId} = obj.data; 
-            const prevTargetId = getTargetIdByElId(elId);
+          case "add":
+          case "move":
+            const {trId: mTrId, elId: mElId} = obj.data; 
+            const prevTargetId = getTargetIdByElId(mElId);
             if(prevTargetId) {
              valetData[prevTargetId] = {...valetData[prevTargetId], e: null};  
             }
-            valetData[trId] = {...valetData[trId], e: elId};
-            renderDropItem({elId, trId});
+            valetData[mTrId] = {...valetData[mTrId], e: mElId};
+            renderMove(obj.data);
             break;
+          case "drop":
+            const {elId: elId} = obj.data;
+            const targId = getTargetIdByElId(elId);
+            if(targId) {
+              valetData[targId] = {...valetData[targId], e: null}
+            }
           default:
             break;
         }
@@ -195,10 +202,6 @@
       const DX = Math.round(DragTargetEl.width / 2);
       const DY = Math.round(DragTargetEl.height / 2);
 
-      BgImgEl.addEventListener("click", function (e) {
-        console.log(e.offsetX, e.offsetY);
-      });
-
       function dragStart(event) {
         event.dataTransfer.setData("ElId", event.target.id);
         event.dataTransfer.setData("TrId", getTargetIdByElId(event.target.id.replace("DragTarget", "")));
@@ -212,16 +215,25 @@
 
       function drop(event) {
         event.preventDefault();
-        if (isDropOnCar(event)) return;
+        if (isRecycleArea(event)) {
+          console.log("recycle bin area", event.dataTransfer.getData("ElId").replace("DragTarget", ""));
+          let act = "drop";
+          const tarId = event.dataTransfer.getData("ElId").replace("DragTarget", "");
+          sendMessage({
+            act,
+            data: {elId: tarId}
+          })
+        }
         if (!isValidPosition(event)) return;
         const id = event.dataTransfer.getData("ElId");
         const trId = event.dataTransfer.getData("TrId");
+        console.log("elId", id, "trId", trId)
         let el = document.getElementById(id);
-        let action = "drop";
+        let action = "move";
         if (isDropFirst(id)) {
-          action = "drop";
+          action = "add";
           generateNewDragItem();
-          el.id += Object.values(valetData).filter(({e}) => !!e).length + 1;
+          el.id += Object.values(valetData).reduce((s, {e}) => s = Math.max(s, e), 1) + 1;
         }
         el.style.position = "absolute";
         const {x, y, w, h} = valetData[getTargetId(event)];
@@ -231,18 +243,12 @@
 
         el.style.left = x + w / 2 - DX + "px";
         el.style.top = y + h / 2 - DY + "px";
-
-       
         
         GarageEl.appendChild(el);
         sendMessage({
           action,
           data: { trId: getTargetId(event), elId: el.id.replace("DragTarget", "") },
         });
-      }
-
-      function isDropOnCar(event) {
-        return event.target.id.includes("DragTarget");
       }
 
       function isDropFirst(id) {
@@ -320,13 +326,25 @@
           });
       }
 
-      function renderDropItem({elId, trId}) {
+      function renderMove({elId, trId}) {
         const el = document.getElementById("DragTarget" + elId);
         const { x, y, w, h} = valetData[trId];
         if(w > h) el.style.transform = "rotate(90deg)"
         el.style.left = x + w / 2 - DX + "px";
         el.style.top = y + h / 2 - DY + "px";
       }
+
+      function isRecycleArea(event) {
+        if (
+            event.offsetX > 330 &&
+            event.offsetX < 430 &&
+            event.offsetY > 0 &&
+            event.offsetY < 40
+          )
+            return true;
+        return false;
+      }
+
     </script>
   </body>
 </html>

@@ -34,8 +34,9 @@ class MyWebSocketServer implements MessageComponentInterface {
                 $from->send(json_encode(['action'=>$action, 'data'=>$result]));
                 break;
 
-            case 'drop':
-                echo "Drop action\n";
+            case 'add':
+            case 'move':
+                echo "Move action\n";
                 $result = $this->db->dropEl($obj->data);
                 if($result) {
                     foreach ($this->clients as $client) {
