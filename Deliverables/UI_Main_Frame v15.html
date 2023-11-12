@@ -143,7 +143,7 @@
     />
 
     <script>
-      let valetData = null;
+      let valetData = {};
 
       const socket = new WebSocket("ws://localhost:12345");
 
@@ -156,13 +156,24 @@
         const obj = JSON.parse(event.data);
         switch (obj.action) {
           case "init":
-            valetData = obj.data;
+            valetData = obj.data.reduce(
+              (a, item) => ({ ...a, [item.id]: item }),
+              {}
+            );
             renderInit();
+            break;
+          case "drop":
+            const {trId, elId} = obj.data; 
+            const prevTargetId = getTargetIdByElId(elId);
+            if(prevTargetId) {
+             valetData[prevTargetId] = {...valetData[prevTargetId], e: null};  
+            }
+            valetData[trId] = {...valetData[trId], e: elId};
+            renderDropItem({elId, trId});
             break;
           default:
             break;
         }
-        console.log(`Received message: ${event.data}`);
       });
 
       socket.addEventListener("close", (event) => {
@@ -181,12 +192,16 @@
       const GarageEl = document.getElementById("Garage");
       const DragTargetEl = document.getElementById("DragTarget");
 
+      const DX = Math.round(DragTargetEl.width / 2);
+      const DY = Math.round(DragTargetEl.height / 2);
+
       BgImgEl.addEventListener("click", function (e) {
         console.log(e.offsetX, e.offsetY);
       });
 
       function dragStart(event) {
-        event.dataTransfer.setData("ID", event.target.id);
+        event.dataTransfer.setData("ElId", event.target.id);
+        event.dataTransfer.setData("TrId", getTargetIdByElId(event.target.id.replace("DragTarget", "")));
       }
 
       function dragging(event) {}
@@ -199,19 +214,31 @@
         event.preventDefault();
         if (isDropOnCar(event)) return;
         if (!isValidPosition(event)) return;
-        const id = event.dataTransfer.getData("ID");
+        const id = event.dataTransfer.getData("ElId");
+        const trId = event.dataTransfer.getData("TrId");
         let el = document.getElementById(id);
+        let action = "drop";
         if (isDropFirst(id)) {
+          action = "drop";
           generateNewDragItem();
-          el.id += new Date().getTime();
+          el.id += Object.values(valetData).filter(({e}) => !!e).length + 1;
         }
         el.style.position = "absolute";
-        el.style.left = event.offsetX + "px";
-        el.style.top = event.offsetY + "px";
+        const {x, y, w, h} = valetData[getTargetId(event)];
+        const {x: px, y: py, w: pw, h: ph} = valetData[trId]
+
+        if(w > h) el.style.transform = "rotate(90deg)";
+        else el.style.transform = null;
+
+        el.style.left = x + w / 2 - DX + "px";
+        el.style.top = y + h / 2 - DY + "px";
+
+       
+        
         GarageEl.appendChild(el);
         sendMessage({
-          action: "drop",
-          data: { trId: getTargetId(event), elId: el.id },
+          action,
+          data: { trId: getTargetId(event), elId: el.id.replace("DragTarget", "") },
         });
       }
 
@@ -238,31 +265,69 @@
       }
 
       function isValidPosition(event) {
-        const item = { x: 330, y: 60, width: 40, height: 120, empty: true };
-        if (
-          event.offsetX > item.x &&
-          event.offsetX < item.x + item.width &&
-          event.offsetY > item.y &&
-          event.offsetY < item.y + item.height &&
-          item.empty
-        )
-          return true;
+        const targetId = getTargetId(event);
+        if (!!targetId) {
+          const { x, y, w, h, e } = valetData[targetId];
+          if (
+            event.offsetX > x &&
+            event.offsetX < x + w &&
+            event.offsetY > y &&
+            event.offsetY < y + h &&
+            !e
+          )
+            return true;
+        }
+        return false;
+      }
+
+      function getTargetIdByElId(elId) {
+        const arr = Object.values(valetData).filter(
+          ({ e }) =>
+            e == elId
+        );
+        if (arr.length === 1) return arr[0].id;
         return false;
       }
 
       function getTargetId(event) {
-        const x = event.offsetX;
-        const y = event.offsetY;
-        return 1;
+        const arr = Object.values(valetData).filter(
+          ({ id, x, y, w, h, e }) =>
+            event.offsetX > x &&
+            event.offsetX < x + w &&
+            event.offsetY > y &&
+            event.offsetY < y + h
+        );
+        if (arr.length === 1) return arr[0].id;
+        return false;
       }
 
       function renderInit() {
-        // let i;
-        // for (i = 0 ; i < valetData.length() ; i++) {
-        //   if (valetData[i].)
-        // }
+        Object.values(valetData)
+          .filter(({ e }) => !!e)
+          .forEach(({ id, x, y, w, h, e }) => {
+            const el = document.createElement(DragTargetEl.tagName);
+            el.src = DragTargetEl.src;
+            el.ondragstart = DragTargetEl.ondragstart;
+            el.ondrag = DragTargetEl.ondrag;
+            el.ondrag = DragTargetEl.ondrag;
+            el.draggable = DragTargetEl.draggable;
+
+            el.id = "DragTarget" + e;
+            el.style.position = "absolute";
+            if(w > h) el.style.transform = "rotate(90deg)"
+            el.style.left = x + w / 2 - DX + "px";
+            el.style.top = y + h / 2 - DY + "px";
+            GarageEl.appendChild(el);
+          });
       }
 
+      function renderDropItem({elId, trId}) {
+        const el = document.getElementById("DragTarget" + elId);
+        const { x, y, w, h} = valetData[trId];
+        if(w > h) el.style.transform = "rotate(90deg)"
+        el.style.left = x + w / 2 - DX + "px";
+        el.style.top = y + h / 2 - DY + "px";
+      }
     </script>
   </body>
 </html>
