@@ -124,10 +124,14 @@
   </script>
 
   <script>
+
     const BgImgEl = document.getElementById("BgImg");
     const GarageEl = document.getElementById("Garage");
     const DragTargetEl = document.getElementById("DragTarget");
 
+    BgImgEl.addEventListener('click', function (e) {
+      console.log(e.offsetX, e.offsetY);
+    })
     function dragStart(event) {
       event.dataTransfer.setData("ID", event.target.id);
     }
@@ -153,7 +157,7 @@
       el.style.left = event.offsetX + "px";
       el.style.top = event.offsetY + "px";
       GarageEl.appendChild(el);
-      sendMessage(JSON.stringify({ x: event.offsetX, y: event.offsetY }))
+      sendMessage(JSON.stringify({ trId: getTargetId(event), elId: el.id }))
     }
 
     function isDropOnCar(event) {
@@ -179,7 +183,7 @@
     }
 
     function isValidPosition(event) {
-      const item = { x: 335, y: 65, width: 35, height: 115, empty: true }
+      const item = { x: 330, y: 60, width: 40, height: 120, empty: true }
       if (
         event.offsetX > item.x &&
         event.offsetX < item.x + item.width &&
@@ -188,6 +192,12 @@
         item.empty
       ) return true
       return false
+    }
+
+    function getTargetId(event) {
+      const x = event.offsetX;
+      const y = event.offsetY;
+      return 1;
     }
   </script>
 
