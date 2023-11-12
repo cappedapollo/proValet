@@ -6,50 +6,47 @@ use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 
 require 'vendor/autoload.php';
-
-// SQLite database file path
-$dbFile = './db.sqlite';
-
-try {
-    // Create a PDO connection to the SQLite database
-    $pdo = new PDO("sqlite:$dbFile");
-
-    // Set the PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    echo "Connected to the SQLite database successfully\n";
-
-    try {
-        // Create a table if it doesn't exist
-        $pdo->exec("CREATE TABLE IF NOT EXISTS garages (
-                        id INTEGER PRIMARY KEY,
-                        x INTEGER NOT NULL,
-                        y INTEGER NOT NULL,
-                        w INTEGER NOT NULL,
-                        h INTEGER NOT NULL,
-                        f INTEGER DEFAULT 0
-                    )");
-        echo "Table created successfully\n";
-    } catch (PDOException $e) {
-        die("Table creation failed: " . $e->getMessage());
-    }
-
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+require './db.php';
 
 class MyWebSocketServer implements MessageComponentInterface {
+
+    protected $clients;
+
+    public function __construct() {
+        $this->clients = new \SplObjectStorage();
+    }
+    
     public function onOpen(ConnectionInterface $conn) {
+        $this->clients->attach($conn);
         echo "New connection! ({$conn->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        // echo "Received message: $msg\n";
         $obj = json_decode($msg);
-        $from->send("Server received your message: $msg");
+        $action = $obj["action"];
+
+        switch ($action) {
+            case 'init':
+                echo "Init action\n";
+                $result = getAllData();
+                $from->send(json_encode(['action'=>$action, 'data'=>$result]));
+                break;
+
+            case 'drop':
+                echo "Drop action\n";
+                $result = dropEl($obj["data"]);
+                foreach ($this->clients as $client) {
+                    $client->send(json_encode($obj));
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     public function onClose(ConnectionInterface $conn) {
+        $this->clients->detach($conn);
         echo "Connection {$conn->resourceId} has disconnected\n";
     }
 
@@ -67,5 +64,7 @@ $server = IoServer::factory(
     ),
     12345
 );
+
+echo "WebSocket server running at http://localhost:12345\n";
 
 $server->run();
