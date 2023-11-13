@@ -44,6 +44,16 @@ class MyWebSocketServer implements MessageComponentInterface {
                     }
                 }
                 break;
+                
+            case 'remove':
+                echo "Remove action\n";
+                $result = $this->db->removeEl($obj->data);
+                if($result) {
+                    foreach ($this->clients as $client) {
+                        $client->send(json_encode($obj));
+                    }
+                }
+                break;
 
             default:
                 break;

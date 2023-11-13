@@ -1,350 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- This module is part of an AI based system, utilizing both the Reactive Machine and the Limited Memory types, under a Supervised Learning model.  -->
-    <title>ProValet HOME</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-cache, no-store, must-revalidate"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <style>
-      html,
-      body,
-      h1,
-      h2,
-      h3,
-      h4 {
-        font-family: Geneva, Verdana, sans-serif;
-      }
 
-      body {
-        overflow: auto;
-        background-color: #ccc;
-        box-sizing: border-box;
-      }
+<head>
+  <!-- This module is part of an AI based system, utilizing both the Reactive Machine and the Limited Memory types, under a Supervised Learning model.  -->
+  <title>ProValet HOME</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+  <style>
+    html,
+    body,
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: Geneva, Verdana, sans-serif;
+    }
 
-      .valet-container {
-        display: flex;
-        padding-top: 160px;
-        padding-bottom: 40px;
-        overflow: hidden;
-      }
+    body {
+      overflow: auto;
+      background-color: #ccc;
+      box-sizing: border-box;
+    }
 
-      #Garage {
-        position: relative;
-        margin: auto;
-      }
-    </style>
-  </head>
+    .valet-container {
+      display: flex;
+      padding-top: 160px;
+      padding-bottom: 40px;
+      overflow: auto;
+    }
 
-  <body>
-    <!-- App's Top (locked) Panel -->
-    <div
-      class="w3-top w3-container"
-      style="background-color: #2b569a; height: 90px"
-    >
-      <div class="w3-row">
-        <div class="w3-col w3-container w3-display-left" style="width: 180px">
-          <img src="PRO Valet logo v1.jpg" alt="Pro Valet" />
+    #Garage {
+      position: relative;
+      margin: auto;
+    }
+
+    #CarWrapper {
+      position: fixed;
+      top: 100px;
+      left: 10px;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      box-shadow: 0px 0px 20px 0px gray;
+    }
+  </style>
+</head>
+
+<body oncontextmenu="return false;">
+  <!-- App's Top (locked) Panel -->
+  <div class="w3-top w3-container" style="background-color: #2b569a; height: 90px">
+    <div class="w3-row">
+      <div class="w3-col w3-container w3-display-left" style="width: 180px">
+        <img src="PRO Valet logo v1.jpg" alt="Pro Valet" />
+      </div>
+      <div class="w3-col w3-container w3-display-position" style="top: 47px; left: 230px">
+        <!-- Nav Buttons -->
+        <div class="w3-bar w3-large w3-text-light-grey">
+          <a href="#" class="w3-button w3-bar-item">Operations</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-small">Customers</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Search</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Calendar</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Personnel</a>
+          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
+            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Admin</a>
+          <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large"
+            onclick="myFunction()">&#9776;</a>
         </div>
-        <div
-          class="w3-col w3-container w3-display-position"
-          style="top: 47px; left: 230px"
-        >
-          <!-- Nav Buttons -->
-          <div class="w3-bar w3-large w3-text-light-grey">
-            <a href="#" class="w3-button w3-bar-item">Operations</a>
-            <a
-              href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-              class="w3-button w3-bar-item w3-hide-small"
-              >Customers</a
-            >
-            <a
-              href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-              class="w3-button w3-bar-item w3-hide-medium w3-hide-small"
-              >Search</a
-            >
-            <a
-              href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-              class="w3-button w3-bar-item w3-hide-medium w3-hide-small"
-              >Calendar</a
-            >
-            <a
-              href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-              class="w3-button w3-bar-item w3-hide-medium w3-hide-small"
-              >Personnel</a
-            >
-            <a
-              href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-              class="w3-button w3-bar-item w3-hide-medium w3-hide-small"
-              >Admin</a
-            >
-            <a
-              href="javascript:void(0)"
-              class="w3-bar-item w3-button w3-right w3-hide-large"
-              onclick="myFunction()"
-              >&#9776;</a
-            >
-          </div>
-          <div
-            id="nav"
-            class="w3-bar-block w3-hide w3-hide-large w3-text-light-grey"
-            style="
+        <div id="nav" class="w3-bar-block w3-hide w3-hide-large w3-text-light-grey" style="
               background-color: #2b569a;
               border-style: solid;
               border-color: black;
-            "
-          >
-            <a href="#" class="w3-bar-item w3-button">Customers</a>
-            <a href="#" class="w3-bar-item w3-button">Search</a>
-            <a href="#" class="w3-bar-item w3-button">Calendar</a>
-            <a href="#" class="w3-bar-item w3-button">Personnel</a>
-            <a href="#" class="w3-bar-item w3-button">Admin</a>
-          </div>
-        </div>
-
-        <div
-          class="w3-rest w3-container w3-display-position"
-          style="top: 1px; right: 8px"
-        >
-          <p
-            id="result"
-            class="w3-text-white w3-padding-small w3-border w3-border-grey"
-            style="background-color: #556fbb"
-          >
-            <!-- Garage Image UI Initializer and Server Status (SSE) is sent here -->
-            <!-- background-color: #b7005b; *** TODO USE THIS BG color IF FAILURE -->
-            PAGE INIT
-          </p>
+            ">
+          <a href="#" class="w3-bar-item w3-button">Customers</a>
+          <a href="#" class="w3-bar-item w3-button">Search</a>
+          <a href="#" class="w3-bar-item w3-button">Calendar</a>
+          <a href="#" class="w3-bar-item w3-button">Personnel</a>
+          <a href="#" class="w3-bar-item w3-button">Admin</a>
         </div>
       </div>
-    </div>
 
-    <!-- App's Garage Layout Panel -->
-    <div class="valet-container">
-      <div id="Garage" ondrop="drop(event)" ondragover="allowDrop(event)">
-        <img src="Ford GF v3.png" alt="Ford GF" id="BgImg" />
+      <div class="w3-rest w3-container w3-display-position" style="top: 1px; right: 8px">
+        <p id="result" class="w3-text-white w3-padding-small w3-border w3-border-grey"
+          style="background-color: #556fbb">
+          <!-- Garage Image UI Initializer and Server Status (SSE) is sent here -->
+          <!-- background-color: #b7005b; *** TODO USE THIS BG color IF FAILURE -->
+          PAGE INIT
+        </p>
       </div>
     </div>
-    <!-- END OF App's Garage Layout Panel -->
+  </div>
 
-    <img
-      src="Car.png"
-      ondragstart="dragStart(event)"
-      ondrag="dragging(event)"
-      draggable="true"
-      id="DragTarget"
-      style="position: fixed; top: 100px; left: 20px"
-    />
+  <!-- App's Garage Layout Panel -->
+  <div class="valet-container">
+    <div id="Garage" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <img src="Ford GF v3.png" alt="Ford GF" id="BgImg" />
+    </div>
+  </div>
+  <!-- END OF App's Garage Layout Panel -->
 
-    <script>
-      let valetData = {};
+  <div id="CarWrapper">
+    <img src="Car.png" ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" id="Car" />
+  </div>
 
-      const socket = new WebSocket("ws://localhost:12345");
+  <script>
+    let valetData = {};
 
-      socket.addEventListener("open", (event) => {
-        console.log("Connected to server");
-        sendMessage({ action: "init" });
+    const socket = new WebSocket("ws://localhost:12345");
+
+    socket.addEventListener("open", (event) => {
+      console.log("Connected to server");
+      sendMessage({ action: "init" });
+    });
+
+    socket.addEventListener("message", (event) => {
+      const obj = JSON.parse(event.data);
+      switch (obj.action) {
+        case "init":
+          valetData = obj.data.reduce(
+            (a, item) => ({ ...a, [item.id]: item }),
+            {}
+          );
+          renderInit();
+          break;
+        case "add":
+        case "move":
+          const { trId: mTrId, elId: mElId } = obj.data;
+          const prevTargetId = getTargetIdByElId(mElId);
+          if (prevTargetId) {
+            valetData[prevTargetId] = { ...valetData[prevTargetId], e: null };
+          }
+          valetData[mTrId] = { ...valetData[mTrId], e: mElId };
+          renderMove(obj.data);
+          break;
+        case "remove":
+          const { elId: rElId } = obj.data;
+          const targId = getTargetIdByElId(rElId);
+          if (targId) {
+            valetData[targId] = { ...valetData[targId], e: null }
+          }
+          removeEl(obj.data);
+        default:
+          break;
+      }
+    });
+
+    socket.addEventListener("close", (event) => {
+      console.log("Disconnected from server");
+    });
+
+    socket.addEventListener("error", (event) => {
+      console.error(`Error: ${event}`);
+    });
+
+    function sendMessage(message) {
+      socket.send(JSON.stringify(message));
+    }
+
+    const BgImgEl = document.getElementById("BgImg");
+    const GarageEl = document.getElementById("Garage");
+    const CarEl = document.getElementById("Car");
+    const CarWrapperEl = document.getElementById("CarWrapper");
+
+    const DX = Math.round(CarEl.width / 2);
+    const DY = Math.round(CarEl.height / 2);
+
+    function dragStart(event) {
+      event.dataTransfer.setData("ElId", event.target.id);
+      event.dataTransfer.setData("TrId", getTargetIdByElId(event.target.id.replace("Car", "")));
+    }
+
+    function dragging(event) { }
+
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+
+    function drop(event) {
+      event.preventDefault();
+      if (!isValidPosition(event)) return;
+      const id = event.dataTransfer.getData("ElId");
+      const trId = event.dataTransfer.getData("TrId");
+      let el = document.getElementById(id);
+      let action = "move";
+      if (isActionAdd(id)) {
+        action = "add";
+        generateNewDragItem();
+        el.id += Object.values(valetData).reduce((s, { e }) => s = Math.max(s, e), 1) + 1;
+      }
+      el.style.position = "absolute";
+      const { x, y, w, h } = valetData[getTargetId(event)];
+
+      if (w > h) el.style.transform = "rotate(90deg)";
+      else el.style.transform = null;
+
+      el.style.left = x + w / 2 - DX + "px";
+      el.style.top = y + h / 2 - DY + "px";
+
+      GarageEl.appendChild(el);
+      sendMessage({
+        action,
+        data: { trId: getTargetId(event), elId: el.id.replace("Car", "") },
       });
+    }
 
-      socket.addEventListener("message", (event) => {
-        const obj = JSON.parse(event.data);
-        switch (obj.action) {
-          case "init":
-            valetData = obj.data.reduce(
-              (a, item) => ({ ...a, [item.id]: item }),
-              {}
-            );
-            renderInit();
-            break;
-          case "add":
-          case "move":
-            const {trId: mTrId, elId: mElId} = obj.data; 
-            const prevTargetId = getTargetIdByElId(mElId);
-            if(prevTargetId) {
-             valetData[prevTargetId] = {...valetData[prevTargetId], e: null};  
-            }
-            valetData[mTrId] = {...valetData[mTrId], e: mElId};
-            renderMove(obj.data);
-            break;
-          case "drop":
-            const {elId: elId} = obj.data;
-            const targId = getTargetIdByElId(elId);
-            if(targId) {
-              valetData[targId] = {...valetData[targId], e: null}
-            }
-          default:
-            break;
-        }
-      });
+    function isActionAdd(id) {
+      return id === "Car";
+    }
 
-      socket.addEventListener("close", (event) => {
-        console.log("Disconnected from server");
-      });
+    function generateNewDragItem() {
+      const el = document.createElement(CarEl.tagName);
+      el.src = CarEl.src;
+      el.ondragstart = CarEl.ondragstart;
+      el.ondrag = CarEl.ondrag;
+      el.ondrag = CarEl.ondrag;
+      el.draggable = CarEl.draggable;
+      el.id = "Car";
+      CarWrapperEl.appendChild(el);
+    }
 
-      socket.addEventListener("error", (event) => {
-        console.error(`Error: ${event}`);
-      });
-
-      function sendMessage(message) {
-        socket.send(JSON.stringify(message));
-      }
-
-      const BgImgEl = document.getElementById("BgImg");
-      const GarageEl = document.getElementById("Garage");
-      const DragTargetEl = document.getElementById("DragTarget");
-
-      const DX = Math.round(DragTargetEl.width / 2);
-      const DY = Math.round(DragTargetEl.height / 2);
-
-      function dragStart(event) {
-        event.dataTransfer.setData("ElId", event.target.id);
-        event.dataTransfer.setData("TrId", getTargetIdByElId(event.target.id.replace("DragTarget", "")));
-      }
-
-      function dragging(event) {}
-
-      function allowDrop(event) {
-        event.preventDefault();
-      }
-
-      function drop(event) {
-        event.preventDefault();
-        if (isRecycleArea(event)) {
-          console.log("recycle bin area", event.dataTransfer.getData("ElId").replace("DragTarget", ""));
-          let act = "drop";
-          const tarId = event.dataTransfer.getData("ElId").replace("DragTarget", "");
-          sendMessage({
-            act,
-            data: {elId: tarId}
-          })
-        }
-        if (!isValidPosition(event)) return;
-        const id = event.dataTransfer.getData("ElId");
-        const trId = event.dataTransfer.getData("TrId");
-        console.log("elId", id, "trId", trId)
-        let el = document.getElementById(id);
-        let action = "move";
-        if (isDropFirst(id)) {
-          action = "add";
-          generateNewDragItem();
-          el.id += Object.values(valetData).reduce((s, {e}) => s = Math.max(s, e), 1) + 1;
-        }
-        el.style.position = "absolute";
-        const {x, y, w, h} = valetData[getTargetId(event)];
-
-        if(w > h) el.style.transform = "rotate(90deg)";
-        else el.style.transform = null;
-
-        el.style.left = x + w / 2 - DX + "px";
-        el.style.top = y + h / 2 - DY + "px";
-        
-        GarageEl.appendChild(el);
-        sendMessage({
-          action,
-          data: { trId: getTargetId(event), elId: el.id.replace("DragTarget", "") },
-        });
-      }
-
-      function isDropFirst(id) {
-        return id === "DragTarget";
-      }
-
-      function generateNewDragItem() {
-        const el = document.createElement(DragTargetEl.tagName);
-        el.src = DragTargetEl.src;
-        el.ondragstart = DragTargetEl.ondragstart;
-        el.ondrag = DragTargetEl.ondrag;
-        el.ondrag = DragTargetEl.ondrag;
-        el.draggable = DragTargetEl.draggable;
-        el.id = "DragTarget";
-        el.style.position = "fixed";
-        el.style.top = "100px";
-        el.style.left = "20px";
-        document.body.appendChild(el);
-      }
-
-      function isValidPosition(event) {
-        const targetId = getTargetId(event);
-        if (!!targetId) {
-          const { x, y, w, h, e } = valetData[targetId];
-          if (
-            event.offsetX > x &&
-            event.offsetX < x + w &&
-            event.offsetY > y &&
-            event.offsetY < y + h &&
-            !e
-          )
-            return true;
-        }
-        return false;
-      }
-
-      function getTargetIdByElId(elId) {
-        const arr = Object.values(valetData).filter(
-          ({ e }) =>
-            e == elId
-        );
-        if (arr.length === 1) return arr[0].id;
-        return false;
-      }
-
-      function getTargetId(event) {
-        const arr = Object.values(valetData).filter(
-          ({ id, x, y, w, h, e }) =>
-            event.offsetX > x &&
-            event.offsetX < x + w &&
-            event.offsetY > y &&
-            event.offsetY < y + h
-        );
-        if (arr.length === 1) return arr[0].id;
-        return false;
-      }
-
-      function renderInit() {
-        Object.values(valetData)
-          .filter(({ e }) => !!e)
-          .forEach(({ id, x, y, w, h, e }) => {
-            const el = document.createElement(DragTargetEl.tagName);
-            el.src = DragTargetEl.src;
-            el.ondragstart = DragTargetEl.ondragstart;
-            el.ondrag = DragTargetEl.ondrag;
-            el.ondrag = DragTargetEl.ondrag;
-            el.draggable = DragTargetEl.draggable;
-
-            el.id = "DragTarget" + e;
-            el.style.position = "absolute";
-            if(w > h) el.style.transform = "rotate(90deg)"
-            el.style.left = x + w / 2 - DX + "px";
-            el.style.top = y + h / 2 - DY + "px";
-            GarageEl.appendChild(el);
-          });
-      }
-
-      function renderMove({elId, trId}) {
-        const el = document.getElementById("DragTarget" + elId);
-        const { x, y, w, h} = valetData[trId];
-        if(w > h) el.style.transform = "rotate(90deg)"
-        el.style.left = x + w / 2 - DX + "px";
-        el.style.top = y + h / 2 - DY + "px";
-      }
-
-      function isRecycleArea(event) {
+    function isValidPosition(event) {
+      const targetId = getTargetId(event);
+      if (!!targetId) {
+        const { x, y, w, h, e } = valetData[targetId];
         if (
-            event.offsetX > 330 &&
-            event.offsetX < 430 &&
-            event.offsetY > 0 &&
-            event.offsetY < 40
-          )
-            return true;
-        return false;
+          event.offsetX > x &&
+          event.offsetX < x + w &&
+          event.offsetY > y &&
+          event.offsetY < y + h &&
+          !e
+        )
+          return true;
       }
+      return false;
+    }
 
-    </script>
-  </body>
+    function getTargetIdByElId(elId) {
+      const arr = Object.values(valetData).filter(
+        ({ e }) =>
+          e == elId
+      );
+      if (arr.length === 1) return arr[0].id;
+      return false;
+    }
+
+    function getTargetId(event) {
+      const arr = Object.values(valetData).filter(
+        ({ id, x, y, w, h, e }) =>
+          event.offsetX > x &&
+          event.offsetX < x + w &&
+          event.offsetY > y &&
+          event.offsetY < y + h
+      );
+      if (arr.length === 1) return arr[0].id;
+      return false;
+    }
+
+    function renderInit() {
+      Object.values(valetData)
+        .filter(({ e }) => !!e)
+        .forEach(({ id, x, y, w, h, e }) => {
+          const el = document.createElement(CarEl.tagName);
+          el.src = CarEl.src;
+          el.ondragstart = CarEl.ondragstart;
+          el.ondrag = CarEl.ondrag;
+          el.ondrag = CarEl.ondrag;
+          el.draggable = CarEl.draggable;
+          el.ondblclick = (e) => {
+            e.preventDefault()
+            const result = window.confirm("Do you want to remove?");
+
+            if (result) {
+              sendMessage({
+                action: 'remove',
+                data: { elId: e.target.id.replace("Car", "") }
+              })
+            } else {
+              console.log("User clicked Cancel");
+            }
+          }
+
+          el.id = "Car" + e;
+          el.style.position = "absolute";
+          if (w > h) el.style.transform = "rotate(90deg)"
+          el.style.left = x + w / 2 - DX + "px";
+          el.style.top = y + h / 2 - DY + "px";
+          GarageEl.appendChild(el);
+        });
+    }
+
+    function renderMove({ elId, trId }) {
+      const el = document.getElementById("Car" + elId);
+      const { x, y, w, h } = valetData[trId];
+      if (w > h) el.style.transform = "rotate(90deg)"
+      el.style.left = x + w / 2 - DX + "px";
+      el.style.top = y + h / 2 - DY + "px";
+    }
+
+    function removeEl({ elId }) {
+      const el = document.getElementById("Car" + elId);
+      el.remove();
+    }
+
+  </script>
+</body>
+
 </html>
