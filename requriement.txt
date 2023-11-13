@@ -1,2 +1,0 @@
-In that mockup there is an example of how an image of a car would be displayed over a background image of a parking garage layout. The position of where the vehicle is displayed will be stored in MySQL.
-You will further the development of the application by allowing the user to click on the car and update its position. If another user is also viewing the webpage we would like his screen to update the new position of the car. 

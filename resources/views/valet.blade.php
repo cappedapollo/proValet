@@ -1,119 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends("layout.app")
 
-<head>
-  <!-- This module is part of an AI based system, utilizing both the Reactive Machine and the Limited Memory types, under a Supervised Learning model.  -->
-  <title>ProValet HOME</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-  <style>
-    html,
-    body,
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: Geneva, Verdana, sans-serif;
+@push('style')
+<style>
+    .pt-160 {
+        padding-top: 160px;
     }
 
-    body {
-      overflow: auto;
-      background-color: #ccc;
-      box-sizing: border-box;
-    }
-
-    .valet-container {
-      display: flex;
-      padding-top: 160px;
-      padding-bottom: 40px;
-      overflow: auto;
-    }
-
-    #Garage {
-      position: relative;
-      margin: auto;
+    .pb-40 {
+        padding-bottom: 40px;
     }
 
     #CarWrapper {
-      position: fixed;
-      top: 100px;
-      left: 10px;
-      padding: 10px;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 10px;
-      box-shadow: 0px 0px 20px 0px gray;
+        position: fixed;
+        z-index: 100;
+        top: 110px;
+        left: 1rem;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px 0px gray;
     }
-  </style>
-</head>
+</style>
+@endpush
 
-<body oncontextmenu="return false;">
-  <!-- App's Top (locked) Panel -->
-  <div class="w3-top w3-container" style="background-color: #2b569a; height: 90px">
-    <div class="w3-row">
-      <div class="w3-col w3-container w3-display-left" style="width: 180px">
-        <img src="PROValetlogov1.jpg" alt="Pro Valet" />
-      </div>
-      <div class="w3-col w3-container w3-display-position" style="top: 47px; left: 230px">
-        <!-- Nav Buttons -->
-        <div class="w3-bar w3-large w3-text-light-grey">
-          <a href="#" class="w3-button w3-bar-item">Operations</a>
-          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-            class="w3-button w3-bar-item w3-hide-small">Customers</a>
-          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Search</a>
-          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Calendar</a>
-          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Personnel</a>
-          <a href="javascript:alert('OPTION NOT AVAILABLE'); void(0);"
-            class="w3-button w3-bar-item w3-hide-medium w3-hide-small">Admin</a>
-          <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large"
-            onclick="myFunction()">&#9776;</a>
-        </div>
-        <div id="nav" class="w3-bar-block w3-hide w3-hide-large w3-text-light-grey" style="
-              background-color: #2b569a;
-              border-style: solid;
-              border-color: black;
-            ">
-          <a href="#" class="w3-bar-item w3-button">Customers</a>
-          <a href="#" class="w3-bar-item w3-button">Search</a>
-          <a href="#" class="w3-bar-item w3-button">Calendar</a>
-          <a href="#" class="w3-bar-item w3-button">Personnel</a>
-          <a href="#" class="w3-bar-item w3-button">Admin</a>
-        </div>
-      </div>
-
-      <div class="w3-rest w3-container w3-display-position" style="top: 1px; right: 8px">
-        <p id="result" class="w3-text-white w3-padding-small w3-border w3-border-grey"
-          style="background-color: #556fbb">
-          <!-- Garage Image UI Initializer and Server Status (SSE) is sent here -->
-          <!-- background-color: #b7005b; *** TODO USE THIS BG color IF FAILURE -->
-          PAGE INIT
-        </p>
-      </div>
+@section('content')
+ <div class="d-flex pt-160 pb-40 overflow-auto">
+    <div id="Garage" class="m-auto position-relative" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <img src="{{ asset('/assets/img/FordGFv3.png') }}" alt="Ford GF" id="BgImg" />
     </div>
   </div>
-
-  <!-- App's Garage Layout Panel -->
-  <div class="valet-container">
-    <div id="Garage" ondrop="drop(event)" ondragover="allowDrop(event)">
-      <img src="FordGFv3.png" alt="Ford GF" id="BgImg" />
-    </div>
-  </div>
-  <!-- END OF App's Garage Layout Panel -->
-
   <div id="CarWrapper">
-    <img src="Car.png" ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" id="Car" />
+    <img src="{{ asset('/assets/img/Car.png') }}"
+        width="30" height="54"
+        ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" id="Car" />
   </div>
-
   <script>
     let valetData = {};
-
-    const socket = new WebSocket("ws://localhost:12345");
+    const socket = new WebSocket("ws://localhost:9001");
 
     socket.addEventListener("open", (event) => {
       console.log("Connected to server");
@@ -310,6 +233,5 @@
     }
 
   </script>
-</body>
 
-</html>
+@endsection

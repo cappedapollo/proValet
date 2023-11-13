@@ -1,21 +1,17 @@
 <?php
+
+namespace App\Console\Handler;
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-use Ratchet\Server\IoServer;
-use Ratchet\Http\HttpServer;
-use Ratchet\WebSocket\WsServer;
-include 'db.php';
+use App\Models\Garage;
 
-require 'vendor/autoload.php';
-
-class MyWebSocketServer implements MessageComponentInterface {
-
+class WebSocketHandler implements MessageComponentInterface
+{
     protected $clients;
-    protected $db;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage();
-        $this->db = new DB();
     }
     
     public function onOpen(ConnectionInterface $conn) {
@@ -30,14 +26,19 @@ class MyWebSocketServer implements MessageComponentInterface {
         switch ($action) {
             case 'init':
                 echo "Init action\n";
-                $result = $this->db->getAllData();
+                $result = Garage::all();
                 $from->send(json_encode(['action'=>$action, 'data'=>$result]));
                 break;
 
             case 'add':
             case 'move':
                 echo "Move action\n";
-                $result = $this->db->dropEl($obj->data);
+                $result = Garage::where('e', $obj->data->elId)->update([
+                    'e' => null
+                ]);
+                $result = Garage::where('id', $obj->data->trId)->update([
+                    'e' => $obj->data->elId
+                ]);
                 if($result) {
                     foreach ($this->clients as $client) {
                         $client->send(json_encode($obj));
@@ -47,7 +48,9 @@ class MyWebSocketServer implements MessageComponentInterface {
                 
             case 'remove':
                 echo "Remove action\n";
-                $result = $this->db->removeEl($obj->data);
+                $result = Garage::where('e', $obj->data->elId)->update([
+                    'e' => null
+                ]);
                 if($result) {
                     foreach ($this->clients as $client) {
                         $client->send(json_encode($obj));
@@ -70,16 +73,3 @@ class MyWebSocketServer implements MessageComponentInterface {
         $conn->close();
     }
 }
-
-$server = IoServer::factory(
-    new HttpServer(
-        new WsServer(
-            new MyWebSocketServer()
-        )
-    ),
-    12345
-);
-
-echo "WebSocket server running at http://localhost:12345\n";
-
-$server->run();
